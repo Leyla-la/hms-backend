@@ -1,7 +1,6 @@
 package com.hms.profile.utility;
 
-import com.hms.user.exception.HmsException;
-import com.hms.user.utility.ErrorInfo;
+import com.hms.profile.exception.HmsException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
