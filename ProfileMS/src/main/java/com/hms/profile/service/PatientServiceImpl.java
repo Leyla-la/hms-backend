@@ -1,6 +1,6 @@
 package com.hms.profile.service;
 
-import com.hms.profile.entity.PatientDTO;
+import com.hms.profile.dto.PatientDTO;
 import com.hms.profile.exception.HmsException;
 import com.hms.profile.repository.PatientRepository;
 import lombok.AccessLevel;
@@ -18,12 +18,12 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Long addPatient(PatientDTO patientDTO) throws HmsException {
         if (patientDTO.getEmail() != null && patientRepository.findByEmail(patientDTO.getEmail()).isPresent()) throw new HmsException("PATIENT_ALREADY_EXISTS");
-        if (patientDTO.getAadharNo() != null && patientRepository.findByAadharNo(patientDTO.getAadharNo()).isPresent()) throw new HmsException("PATIENT_ALREADY_EXISTS");
+        if (patientDTO.getCitizenId() != null && patientRepository.findByCitizenId(patientDTO.getCitizenId()).isPresent()) throw new HmsException("PATIENT_ALREADY_EXISTS");
         return (patientRepository.save(patientDTO.toPatient())).getId();
     }
 
     @Override
     public PatientDTO getPatientById(Long id) throws HmsException {
-        return patientRepository.findById(id).orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND")).toPatientDTO();
+        return (patientRepository.findById(id).orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND"))).toPatientDTO();
     }
 }

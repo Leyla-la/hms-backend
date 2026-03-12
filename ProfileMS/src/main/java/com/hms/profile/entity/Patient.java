@@ -4,7 +4,7 @@ import com.hms.profile.dto.BloodGroup;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.hms.profile.entity.PatientDTO;
+import com.hms.profile.dto.PatientDTO;
 
 import java.time.LocalDate;
 
@@ -28,12 +28,12 @@ public class Patient {
     String address;
 
     @Column(unique = true)
-    String aadharNo;
+    String citizenId;
 
     BloodGroup bloodGroup;
 
     public PatientDTO toPatientDTO() {
-        return new PatientDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.aadharNo, this.bloodGroup);
+        return new PatientDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup);
     }
 
 }

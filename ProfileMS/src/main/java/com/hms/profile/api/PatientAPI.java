@@ -1,6 +1,6 @@
 package com.hms.profile.api;
 
-import com.hms.profile.entity.PatientDTO;
+import com.hms.profile.dto.PatientDTO;
 import com.hms.profile.exception.HmsException;
 import com.hms.profile.service.PatientService;
 import lombok.AccessLevel;

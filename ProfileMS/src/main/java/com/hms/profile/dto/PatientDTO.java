@@ -1,7 +1,6 @@
-package com.hms.profile.entity;
+package com.hms.profile.dto;
 
-import com.hms.profile.dto.BloodGroup;
-import jakarta.persistence.*;
+import com.hms.profile.entity.Patient;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,11 +18,11 @@ public class PatientDTO {
     LocalDate dob;
     String phone;
     String address;
-    String aadharNo;
+    String citizenId;
     BloodGroup bloodGroup;
 
     public Patient toPatient() {
-        return new Patient(this.id, this.name, this.email, this.dob, this.phone, this.address, this.aadharNo, this.bloodGroup);
+        return new Patient(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup);
     }
 
 }
