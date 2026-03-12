@@ -1,10 +1,10 @@
 package com.hms.profile.entity;
 
 import com.hms.profile.dto.BloodGroup;
+import com.hms.profile.dto.PatientDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.hms.profile.dto.PatientDTO;
 
 import java.time.LocalDate;
 
@@ -31,9 +31,10 @@ public class Patient {
     String citizenId;
 
     BloodGroup bloodGroup;
+    String allergies;
+    String chronicDiseases;
 
     public PatientDTO toPatientDTO() {
-        return new PatientDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup);
+        return new PatientDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup, this.allergies, this.chronicDiseases);
     }
-
 }
