@@ -20,9 +20,10 @@ public class PatientDTO {
     String address;
     String citizenId;
     BloodGroup bloodGroup;
+    String allergies;
+    String chronicDiseases;
 
     public Patient toPatient() {
-        return new Patient(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup);
+        return new Patient(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup, this.allergies, this.chronicDiseases);
     }
-
 }
