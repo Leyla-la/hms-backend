@@ -29,4 +29,18 @@ public class DoctorServiceImpl implements DoctorService{
     public DoctorDTO getDoctorById(Long doctorId) throws HmsException {
         return doctorRepository.findById(doctorId).orElseThrow(() -> new HmsException("DOCTOR_NOT_FOUND")).toDoctorDTO();
     }
+
+    @Override
+    public DoctorDTO updateDoctor(DoctorDTO doctorDTO) throws HmsException {
+        if (doctorRepository.findById(doctorDTO.getId()).isEmpty()) {
+            throw new HmsException("DOCTOR_NOT_FOUND");
+        }
+        return doctorRepository.save(doctorDTO.toDoctor()).toDoctorDTO();
+    }
+
+    @Override
+    public Boolean doctorExists(Long doctorId) throws HmsException {
+        return doctorRepository.existsById(doctorId);
+    }
+
 }

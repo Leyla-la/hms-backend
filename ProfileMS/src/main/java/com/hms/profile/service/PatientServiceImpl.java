@@ -26,4 +26,18 @@ public class PatientServiceImpl implements PatientService {
     public PatientDTO getPatientById(Long id) throws HmsException {
         return (patientRepository.findById(id).orElseThrow(() -> new HmsException("PATIENT_NOT_FOUND"))).toPatientDTO();
     }
+
+    @Override
+    public PatientDTO updatePatient(PatientDTO patientDTO) throws HmsException {
+        if (patientDTO.getId() == null || patientRepository.findById(patientDTO.getId()).isEmpty()) {
+            throw new HmsException("PATIENT_NOT_FOUND");
+        }
+        return (patientRepository.save(patientDTO.toPatient())).toPatientDTO();
+    }
+
+    @Override
+    public Boolean patientExists(Long id) throws HmsException {
+        return patientRepository.findById(id).isPresent();
+    }
+
 }
