@@ -8,5 +8,7 @@ public interface PatientService {
 
     Long addPatient(PatientDTO patientDTO) throws HmsException;
     PatientDTO getPatientById(Long id) throws HmsException;
+    PatientDTO updatePatient(PatientDTO patientDTO) throws HmsException;
+        Boolean patientExists(Long id) throws HmsException;
 
 }
