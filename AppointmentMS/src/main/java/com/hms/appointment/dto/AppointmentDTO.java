@@ -1,14 +1,15 @@
 package com.hms.appointment.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hms.appointment.entity.Appointment;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +22,10 @@ public class AppointmentDTO {
 
     Long patientId;
     Long doctorId;
-    LocalDate appointmentTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    LocalDateTime appointmentTime;
+
     Status status;
     String reason;
     String notes;

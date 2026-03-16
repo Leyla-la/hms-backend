@@ -1,12 +1,14 @@
 package com.hms.appointment.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -25,7 +27,10 @@ public class AppointmentDetails {
     String doctorPhone;
     String doctorSpecialization;
     String doctorLicenseNumber;
-    LocalDate appointmentTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    LocalDateTime appointmentTime;
+
     Status status;
     String reason;
     String notes;

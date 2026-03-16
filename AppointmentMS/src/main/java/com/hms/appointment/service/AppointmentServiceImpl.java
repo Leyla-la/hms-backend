@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -67,5 +69,27 @@ public class AppointmentServiceImpl implements AppointmentService {
         PatientDTO patientDTO = profileClient.getPatientById(appointmentDTO.getPatientId());
         return new AppointmentDetails(appointmentDTO.getId(), appointmentDTO.getPatientId(), patientDTO.getName(), patientDTO.getEmail(), patientDTO.getPhone(), patientDTO.getCitizenId(), appointmentDTO.getDoctorId(), doctorDTO.getName(), doctorDTO.getEmail(), doctorDTO.getPhone(), doctorDTO.getSpecialization(), doctorDTO.getLicenseNo(), appointmentDTO.getAppointmentTime(), appointmentDTO.getStatus(), appointmentDTO.getReason(), appointmentDTO.getNotes());
 
+    }
+
+    @Override
+    public List<AppointmentDetails> getAllAppointmentsByPatientId(Long patientId) throws HmsException {
+        return appointmentRepository.findAllByPatientId(patientId).stream()
+                .map(appointment -> {
+                    DoctorDTO doctorDTO = profileClient.getDoctorById(appointment.getDoctorId());
+                    appointment.setDoctorName(doctorDTO.getName());
+                    return appointment;
+                }).toList();
+    }
+
+    @Override
+    public List<AppointmentDetails> getAllAppointmentsByDoctorId(Long doctorId) throws HmsException {
+        return appointmentRepository.findAllByDoctorId(doctorId).stream()
+                .map(appointment -> {
+                    PatientDTO patientDTO = profileClient.getPatientById(appointment.getPatientId());
+                    appointment.setPatientName(patientDTO.getName());
+                    appointment.setPatientEmail(patientDTO.getEmail());
+                    appointment.setPatientPhone(patientDTO.getPhone());
+                    return appointment;
+                }).toList();
     }
 }
