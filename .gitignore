@@ -1,6 +1,7 @@
 # Maven
 target/
 *.class
+*.ipr
 
 # IDE
 .idea/
@@ -10,7 +11,32 @@ target/
 
 # Logs
 *.log
+*.log.*
+*.tmp
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Maven wrapper (not needed in repo)
+mvnw
+mvnw.cmd
+.mvn/
+
+# Recovery / Backup folders
+.git.recovery-*/
+restore_backup-*/
+tmp-*/
+tmp_*/
+recovered_*/
+
+# Scripts & temp files
+*.py
+*.json
+*.csv
+*.txt
+
+# Build artifacts
+build_output.txt
+compile_errors.txt
+clean_compile.txt
