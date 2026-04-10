@@ -323,9 +323,3 @@ git push origin feat/your-feature
 - `refactor/` — code restructure
 
 ---
-
-<div align="center">
-
-Built with ❤️ · Spring Boot Microservices · Event-Driven Architecture
-
-</div>
