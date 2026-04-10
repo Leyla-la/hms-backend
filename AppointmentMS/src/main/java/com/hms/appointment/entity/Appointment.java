@@ -32,7 +32,15 @@ public class Appointment {
     String notes;
 
     public AppointmentDTO toAppointmentDTO() {
-        return new AppointmentDTO(this.id, this.patientId, this.doctorId, this.appointmentTime, this.status, this.reason, this.notes);
+        return AppointmentDTO.builder()
+                .id(this.id)
+                .patientId(this.patientId)
+                .doctorId(this.doctorId)
+                .appointmentTime(this.appointmentTime)
+                .status(this.status)
+                .reason(this.reason)
+                .notes(this.notes)
+                .build();
     }
 
     public Appointment(Long id) {

@@ -21,6 +21,6 @@ public class DoctorDTO {
     String specialization;
     String department;
     Integer totalExp;
-
+    Long profilePictureId;
 
 }

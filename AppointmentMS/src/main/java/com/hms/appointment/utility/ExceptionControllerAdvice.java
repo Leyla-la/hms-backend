@@ -31,8 +31,10 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(HmsException.class)
     public ResponseEntity<ErrorInfo> hmsExceptionHandler(HmsException e) {
-        ErrorInfo error = new ErrorInfo(env.getProperty(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDateTime.now());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        String msg = env.getProperty(e.getMessage());
+        if (msg == null) msg = e.getMessage();
+        ErrorInfo error = new ErrorInfo(msg, HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})

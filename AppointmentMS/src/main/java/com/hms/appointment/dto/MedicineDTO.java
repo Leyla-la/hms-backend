@@ -2,7 +2,6 @@ package com.hms.appointment.dto;
 
 import com.hms.appointment.entity.Medicine;
 import com.hms.appointment.entity.Prescription;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -24,6 +23,17 @@ public class MedicineDTO {
     Long prescriptionId;
 
     public Medicine toMedicine() {
-        return new Medicine(this.id, this.name, this.medicineId, this.dosage, this.frequency, this.duration, this.route, this.type, this.instructions, new Prescription(prescriptionId));
+        return Medicine.builder()
+                .id(this.id)
+                .name(this.name)
+                .medicineId(this.medicineId)
+                .dosage(this.dosage)
+                .frequency(this.frequency)
+                .duration(this.duration)
+                .route(this.route)
+                .type(this.type)
+                .instructions(this.instructions)
+                .prescription(this.prescriptionId != null ? new Prescription(this.prescriptionId) : null)
+                .build();
     }
 }

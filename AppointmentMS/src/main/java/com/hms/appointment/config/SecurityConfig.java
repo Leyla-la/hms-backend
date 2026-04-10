@@ -33,6 +33,11 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth
                         -> auth.requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers(
                                 request->"SECRET".equals(request.getHeader("X-Secret-Key")))
                         .permitAll()
                         .anyRequest()

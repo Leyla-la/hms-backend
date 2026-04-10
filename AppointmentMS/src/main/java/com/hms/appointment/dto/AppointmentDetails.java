@@ -1,18 +1,15 @@
 package com.hms.appointment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentDetails {
     Long id;
@@ -26,7 +23,7 @@ public class AppointmentDetails {
     String doctorEmail;
     String doctorPhone;
     String doctorSpecialization;
-    String doctorLicenseNumber;
+    String doctorLicenseNo; // Khớp với licenseNo trong Service
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime appointmentTime;

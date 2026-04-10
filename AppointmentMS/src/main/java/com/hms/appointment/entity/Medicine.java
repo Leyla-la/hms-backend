@@ -28,6 +28,6 @@ public class Medicine {
     Prescription prescription;
 
     public MedicineDTO toMedicineDTO() {
-        return new MedicineDTO(this.id, this.name, this.medicineId, this.dosage, this.frequency, this.duration, this.route, this.type, this.instructions, prescription.getId());
+        return new MedicineDTO(this.id, this.name, this.medicineId, this.dosage, this.frequency, this.duration, this.route, this.type, this.instructions, prescription != null ? prescription.getId() : null);
     }
 }

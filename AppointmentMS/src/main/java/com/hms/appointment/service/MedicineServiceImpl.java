@@ -2,6 +2,7 @@ package com.hms.appointment.service;
 
 import com.hms.appointment.dto.MedicineDTO;
 import com.hms.appointment.entity.Medicine;
+import com.hms.appointment.entity.Prescription;
 import com.hms.appointment.exception.HmsException;
 import com.hms.appointment.repository.MedicineRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,15 @@ public class MedicineServiceImpl implements MedicineService{
     @Override
     public List<MedicineDTO> getAllMedicinesByPrescriptionId(Long prescriptionId) throws HmsException {
         return medicineRepository.findAllByPrescription_Id(prescriptionId)
+                .stream()
+                .map(Medicine::toMedicineDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MedicineDTO> getMedicinesByPrescriptionIds(List<Long> prescriptionIds) throws HmsException {
+        if (prescriptionIds == null || prescriptionIds.isEmpty()) return List.of();
+        return medicineRepository.findAllByPrescription_IdIn(prescriptionIds)
                 .stream()
                 .map(Medicine::toMedicineDTO)
                 .toList();

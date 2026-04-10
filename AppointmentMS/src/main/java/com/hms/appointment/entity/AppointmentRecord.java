@@ -25,7 +25,7 @@ public class AppointmentRecord {
     Long patientId;
     Long doctorId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
     Appointment appointment;
 
@@ -42,19 +42,18 @@ public class AppointmentRecord {
 
         Long appointmentId = record.getAppointment() != null ? record.getAppointment().getId() : null;
 
-        return new AppointmentRecordDTO(
-                record.getId(),
-                record.getPatientId(),
-                record.getDoctorId(),
-                appointmentId,
-                fromCsv(record.getSymptoms()),
-                record.getDiagnosis(),
-                fromCsv(record.getTests()),
-                record.getNotes(),
-                record.getReferral(),
-                null, // prescription (set explicitly to null)
-                record.getFollowUpDate(),
-                record.getCreatedAt()
-        );
+        return AppointmentRecordDTO.builder()
+                .id(record.getId())
+                .patientId(record.getPatientId())
+                .doctorId(record.getDoctorId())
+                .appointmentId(appointmentId)
+                .symptoms(fromCsv(record.getSymptoms()))
+                .diagnosis(record.getDiagnosis())
+                .tests(fromCsv(record.getTests()))
+                .notes(record.getNotes())
+                .referral(record.getReferral())
+                .followUpDate(record.getFollowUpDate())
+                .createdAt(record.getCreatedAt())
+                .build();
     }
 }

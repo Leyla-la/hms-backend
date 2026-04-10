@@ -1,6 +1,8 @@
 package com.hms.appointment.entity;
 
 import com.hms.appointment.dto.PrescriptionDTO;
+import com.hms.appointment.dto.PrescriptionDetails;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,7 +28,7 @@ public class Prescription {
     Appointment appointment;
 
     LocalDate prescriptionDate;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "prescription", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     List<Medicine> medicines;
     String notes;
 
@@ -35,6 +37,29 @@ public class Prescription {
     }
 
     public PrescriptionDTO toPrescriptionDTO() {
-        return new PrescriptionDTO(this.id, this.patientId, this.doctorId, this.appointment != null ? this.appointment.getId() : null, this.prescriptionDate, this.medicines != null ? this.medicines.stream().map(Medicine::toMedicineDTO).toList() : List.of(), this.notes);
+        return PrescriptionDTO.builder()
+                .id(this.id)
+                .patientId(this.patientId)
+                .doctorId(this.doctorId)
+                .appointmentId(this.appointment != null ? this.appointment.getId() : null)
+                .prescriptionDate(this.prescriptionDate)
+                .medicines(this.medicines != null ? this.medicines.stream().map(Medicine::toMedicineDTO).toList() : List.of())
+                .notes(this.notes)
+                .build();
     }
+
+    // Method bổ sung để phục vụ PrescriptionServiceImpl
+    public PrescriptionDetails toPrescriptionDetails() {
+        return PrescriptionDetails.builder()
+                .id(this.id)
+                .appointmentId(this.appointment != null ? this.appointment.getId() : null)
+                .patientId(this.patientId)
+                .doctorId(this.doctorId)
+                .prescriptionDate(this.prescriptionDate)
+                .notes(this.notes)
+                // Medicines và Names sẽ được Service set sau
+                .build();
+    }
+
+
 }

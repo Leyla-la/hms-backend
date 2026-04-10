@@ -4,21 +4,19 @@ import com.hms.appointment.entity.Appointment;
 import com.hms.appointment.entity.AppointmentRecord;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.hms.appointment.utility.StringListConverter.toCsv;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -35,6 +33,8 @@ public class AppointmentRecordDTO {
     PrescriptionDTO prescription;
     LocalDate followUpDate;
     LocalDateTime createdAt;
+    String doctorName;
+    String patientName;
 
     /**
      * Converts this DTO to a JPA entity.
@@ -58,8 +58,4 @@ public class AppointmentRecordDTO {
                 this.createdAt
         );
     }
-
-
-
-
 }

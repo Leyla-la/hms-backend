@@ -21,5 +21,5 @@ public class PatientDTO {
     BloodGroup bloodGroup;
     String allergies;
     String chronicDiseases;
-
+    Long profilePictureId;
 }

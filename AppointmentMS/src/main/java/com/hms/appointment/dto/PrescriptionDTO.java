@@ -2,7 +2,11 @@ package com.hms.appointment.dto;
 
 import com.hms.appointment.entity.Appointment;
 import com.hms.appointment.entity.Prescription;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -23,15 +27,22 @@ public class PrescriptionDTO {
     String notes;
 
     public Prescription toPrescription() {
-        return Prescription.builder()
-                .id(this.id)
-                .patientId(this.patientId)
-                .doctorId(this.doctorId)
-                .appointment(this.appointmentId == null ? null : new Appointment(this.appointmentId))
-                .prescriptionDate(this.prescriptionDate)
-                .medicines(this.medicines == null ? List.of() : this.medicines.stream().map(MedicineDTO::toMedicine).toList())
-                .notes(this.notes)
-                .build();
-    }
+        // Map appointmentId sang object Appointment
+        Appointment appointment = null;
+        if (this.appointmentId != null) {
+            // Giả định Entity Appointment có constructor nhận ID, 
+            // hoặc bạn có thể sửa thành: appointment = new Appointment(); appointment.setId(this.appointmentId);
+            appointment = new Appointment(this.appointmentId); 
+        }
 
+        return new Prescription(
+                this.id,
+                this.patientId,
+                this.doctorId,
+                appointment,
+                this.prescriptionDate,
+                this.medicines != null ? this.medicines.stream().map(MedicineDTO::toMedicine).toList() : null,
+                this.notes
+        );
+    }
 }
