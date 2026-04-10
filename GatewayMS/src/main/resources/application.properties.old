@@ -1,0 +1,53 @@
+server.port=9000
+spring.application.name=GatewayMS
+
+# Logging (debug TokenFilter)
+logging.level.com.hms.gateway.filter=DEBUG
+
+spring.cloud.gateway.default-filters[0]=DedupeResponseHeader=Access-Control-Allow-Origin RETAIN_UNIQUE
+spring.cloud.gateway.globalcors.corsConfigurations.[/**].allowedOrigins=http://localhost:3000
+spring.cloud.gateway.globalcors.corsConfigurations.[/**].allowedMethods=GET,POST,PUT,DELETE,OPTIONS
+spring.cloud.gateway.globalcors.corsConfigurations.[/**].allowedHeaders=*
+spring.cloud.gateway.globalcors.corsConfigurations.[/**].allowCredentials=true
+
+# Routes
+spring.cloud.gateway.routes[0].id=user-service
+spring.cloud.gateway.routes[0].uri=lb://UserMS
+spring.cloud.gateway.routes[0].predicates[0]=Path=/users/**
+spring.cloud.gateway.routes[0].filters[0]=TokenFilter
+
+spring.cloud.gateway.routes[1].id=profile-service
+spring.cloud.gateway.routes[1].uri=lb://ProfileMS
+spring.cloud.gateway.routes[1].predicates[0]=Path=/profile/**
+spring.cloud.gateway.routes[1].filters[0]=TokenFilter
+
+spring.cloud.gateway.routes[2].id=appointment-service
+spring.cloud.gateway.routes[2].uri=lb://AppointmentMS
+spring.cloud.gateway.routes[2].predicates[0]=Path=/appointments/**
+spring.cloud.gateway.routes[2].filters[0]=TokenFilter
+
+spring.cloud.gateway.routes[3].id=admin-dashboard
+spring.cloud.gateway.routes[3].uri=lb://AppointmentMS
+spring.cloud.gateway.routes[3].predicates[0]=Path=/admin/**
+spring.cloud.gateway.routes[3].filters[0]=TokenFilter
+
+spring.cloud.gateway.routes[4].id=pharmacy-service
+spring.cloud.gateway.routes[4].uri=lb://PharmacyMS
+spring.cloud.gateway.routes[4].predicates[0]=Path=/pharmacy/**
+spring.cloud.gateway.routes[4].filters[0]=TokenFilter
+
+spring.cloud.gateway.routes[5].id=notification-ws
+spring.cloud.gateway.routes[5].uri=lb://NotificationMS
+spring.cloud.gateway.routes[5].predicates[0]=Path=/notification-ws/**
+spring.cloud.gateway.routes[5].filters[0]=TokenFilter
+
+spring.cloud.gateway.routes[6].id=notification-service
+spring.cloud.gateway.routes[6].uri=lb://NotificationMS
+spring.cloud.gateway.routes[6].predicates[0]=Path=/notifications/**
+spring.cloud.gateway.routes[6].filters[0]=TokenFilter
+
+# JWT (must match UserMS)
+jwt.secret=eAl4qXamyfxUGhDDZUo3yh6yxqgGQOu9fFGHXeinTbldUL6rqF40VM1RjPl2Mh5xgZEIC0e21JZ5xwU4V3PX1N
+
+# Kafka
+spring.kafka.bootstrap-servers=localhost:9093

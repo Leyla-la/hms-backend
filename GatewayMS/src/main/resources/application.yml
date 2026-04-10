@@ -1,0 +1,144 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: GatewayMS
+  codec:
+    max-in-memory-size: 10MB
+  webflux:
+    multipart:
+      max-in-memory-size: 10MB
+  kafka:
+    bootstrap-servers: localhost:9093
+  cloud:
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/users/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          '[/profile/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          '[/appointments/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          '[/pharmacy/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          '[/media/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          '[/notifications/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          '[/admin/**]':
+            allowedOriginPatterns: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+          # WebSocket paths EXCLUDED from globalcors to let downstream handle it
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 10s
+        websocket:
+          max-frame-payload-length: 65536
+      routes:
+        - id: user-service
+          uri: lb://UserMS
+          predicates:
+            - Path=/users/**
+          filters:
+            - TokenFilter
+        - id: profile-service
+          uri: lb://ProfileMS
+          predicates:
+            - Path=/profile/**
+          filters:
+            - TokenFilter
+        - id: appointment-service
+          uri: lb://AppointmentMS
+          predicates:
+            - Path=/appointments/**
+          filters:
+            - TokenFilter
+        - id: pharmacy-service
+          uri: lb://PharmacyMS
+          predicates:
+            - Path=/pharmacy/**
+          filters:
+            - TokenFilter
+        - id: media-service
+          uri: lb://MediaMS
+          predicates:
+            - Path=/media/**
+          filters:
+            - TokenFilter
+        - id: notification-service
+          uri: lb://NotificationMS
+          predicates:
+            - Path=/notifications/**
+          filters:
+            - TokenFilter
+        - id: notification-service-websocket
+          uri: lb://NotificationMS
+          predicates:
+            - Path=/notification-ws/**,/ws/notifications/**
+          filters:
+            - TokenFilter
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: user-service
+        url: /users/v3/api-docs
+      - name: profile-service
+        url: /profile/v3/api-docs
+      - name: appointment-service
+        url: /appointments/v3/api-docs
+      - name: pharmacy-service
+        url: /pharmacy/v3/api-docs
+      - name: media-service
+        url: /media/v3/api-docs
+      - name: notification-service
+        url: /notifications/v3/api-docs
+
+jwt:
+  secret: eAl4qXamyfxUGhDDZUo3yh6yxqgGQOu9fFGHXeinTbldUL6rqF40VM1RjPl2Mh5xgZEIC0e21JZ5xwU4V3PX1N
+
+logging:
+  level:
+    com.hms.gateway.filter: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway,info
+  endpoint:
+    health:
+      show-details: always

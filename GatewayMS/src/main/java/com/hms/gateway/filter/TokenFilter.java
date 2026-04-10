@@ -34,9 +34,18 @@ public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config
             String method = exchange.getRequest().getMethod() != null ? exchange.getRequest().getMethod().name() : "";
             log.debug("[Gateway TokenFilter] Incoming request: {} {}", method, path);
 
-            if (path.equals("/users/login") || path.equals("/users/register")
-                    || path.equals("/user/login") || path.equals("/user/register")) {
-                log.debug("[Gateway TokenFilter] Public auth endpoint detected, injecting X-Secret-Key and skipping JWT validation.");
+            boolean hasInternalSecret = "SECRET".equals(exchange.getRequest().getHeaders().getFirst("X-Secret-Key"));
+            if (hasInternalSecret) {
+                log.debug("[Gateway TokenFilter] Internal service call detected. Permitting.");
+                return chain.filter(exchange);
+            }
+
+            boolean isWebSocketPath = path.startsWith("/notification-ws") || path.startsWith("/ws/notifications");
+            boolean isPublicPath = path.contains("/login") || path.contains("/register") || path.contains("/admin/dashboard") || path.contains("/profile/patient/count")
+                    || path.contains("/v3/api-docs") || path.contains("/swagger-ui") || path.contains("/swagger-resources");
+
+            if (isWebSocketPath || isPublicPath) {
+                log.debug("[Gateway TokenFilter] Public or WS path detected: {}", path);
                 return chain.filter(exchange.mutate().request(r -> r.header("X-Secret-Key", "SECRET")).build());
             }
 
@@ -63,22 +72,40 @@ public class TokenFilter extends AbstractGatewayFilterFactory<TokenFilter.Config
                         .parseSignedClaims(token)
                         .getPayload();
 
-                // Useful debugging info (don’t log the raw token)
-                log.debug("[Gateway TokenFilter] JWT validated. sub={}, role={}, userId={}, profileId={}, iat={}, exp={}",
+                // Useful debugging info
+                log.debug("[Gateway TokenFilter] JWT validated. sub={}, role={}, userId={}, profileId={}, name={}",
                         claims.getSubject(),
                         claims.get("role"),
                         claims.get("userId"),
                         claims.get("profileId"),
-                        claims.getIssuedAt(),
-                        claims.getExpiration());
+                        claims.get("name"));
+
+                // Inject headers for downstream services
+                return chain.filter(exchange.mutate().request(r -> {
+                    r.header("X-Secret-Key", "SECRET");
+                    
+                    Object userId = claims.get("userId");
+                    if (userId != null) r.header("X-User-Id", String.valueOf(userId));
+                    
+                    Object role = claims.get("role");
+                    if (role != null) r.header("X-User-Role", String.valueOf(role));
+                    
+                    Object profileId = claims.get("profileId");
+                    if (profileId != null) r.header("X-Profile-Id", String.valueOf(profileId));
+
+                    Object name = claims.get("name");
+                    if (name != null) r.header("X-Actor-Name", String.valueOf(name));
+
+                    // Backward compatibility / Actor info
+                    if (userId != null) r.header("X-Actor-Id", String.valueOf(userId));
+                    if (role != null) r.header("X-Actor-Role", String.valueOf(role));
+                    
+                }).build());
 
             } catch (Exception e) {
                 log.warn("[Gateway TokenFilter] JWT validation failed for {} {}: {}", method, path, e.toString());
                 throw new RuntimeException("Invalid token: " + e.getMessage());
             }
-
-            log.debug("[Gateway TokenFilter] Injecting X-Secret-Key for downstream authorization.");
-            return chain.filter(exchange.mutate().request(r -> r.header("X-Secret-Key", "SECRET")).build());
         };
     }
 
