@@ -1,0 +1,13 @@
+package com.hms.profile.config;
+
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class FeignSecurityInterceptor implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate template) {
+        template.header("X-Secret-Key", "SECRET");
+    }
+}

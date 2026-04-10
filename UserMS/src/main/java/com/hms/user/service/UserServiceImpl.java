@@ -6,6 +6,7 @@ import com.hms.user.dto.UserDTO;
 import com.hms.user.entity.User;
 import com.hms.user.exception.HmsException;
 import com.hms.user.repository.UserRepository;
+import com.hms.user.notification.NotificationPublisher;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +15,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service("userService")
 @Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
-    ApiService apiService;
-    ProfileClient profileClient;
+    final UserRepository userRepository;
+    final PasswordEncoder passwordEncoder;
+    final ApiService apiService;
+    final ProfileClient profileClient;
+    final NotificationPublisher notificationPublisher;
 
     @Override
     public void registerUser(UserDTO userDTO) throws HmsException {
@@ -39,7 +42,17 @@ public class UserServiceImpl implements UserService {
             profileId = profileClient.addPatient(userDTO);
         }
         userDTO.setProfileId(profileId);
-        userRepository.save(userDTO.toUser());
+        User savedUser = userRepository.save(userDTO.toUser());
+
+        // Publish notification
+        notificationPublisher.publish(
+                "hms.user.registered",
+                savedUser.getId().toString(),
+                savedUser.toUserDTO(),
+                "USER_REGISTERED",
+                "UserMS",
+                userRepository.findAdminIds()
+        );
     }
 
     @Override
@@ -65,5 +78,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(String email) throws HmsException {
         return userRepository.findByEmail(email).orElseThrow(() -> new HmsException("USER_NOT_FOUND")).toUserDTO();
+    }
+
+    @Override
+    public List<Long> getAdminIds() throws HmsException {
+        return userRepository.findAdminIds();
+    }
+
+    @Override
+    public long count() {
+        return userRepository.count();
+    }
+
+    @Override
+    public Long getProfile(Long id) throws HmsException {
+        User user = userRepository.findById(id).orElseThrow(() -> new HmsException("USER_NOT_FOUND"));
+        return user.getProfileId();
     }
 }

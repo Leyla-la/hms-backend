@@ -33,9 +33,24 @@ public class Doctor {
     String department;
     Integer totalExp;
 
+    @Column(name = "profile_picture_id")
+    Long profilePictureId;
+
 
     public DoctorDTO toDoctorDTO() {
-        return new DoctorDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.licenseNo, this.specialization, this.department, this.totalExp);
+        return DoctorDTO.builder()
+                .id(this.id)
+                .name(this.name)
+                .email(this.email)
+                .dob(this.dob)
+                .phone(this.phone)
+                .address(this.address)
+                .licenseNo(this.licenseNo)
+                .specialization(this.specialization)
+                .department(this.department)
+                .totalExp(this.totalExp)
+                .profilePictureId(this.profilePictureId)
+                .build();
     }
 
 }

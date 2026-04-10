@@ -18,4 +18,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     @Query("SELECT d.id AS id, d.name AS name FROM Doctor d")
     List<DoctorDropdown> findAllDoctorDropdown();
+
+    @Query("SELECT d.department, COUNT(d) FROM Doctor d GROUP BY d.department")
+    List<Object[]> countByDepartment();
 }

@@ -1,11 +1,15 @@
 package com.hms.profile.service;
 
+import com.hms.profile.dto.DoctorName;
 import com.hms.profile.dto.PatientDTO;
 import com.hms.profile.exception.HmsException;
 import com.hms.profile.repository.PatientRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +17,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PatientServiceImpl implements PatientService {
 
-    PatientRepository patientRepository;
+    final PatientRepository patientRepository;
 
     @Override
     public Long addPatient(PatientDTO patientDTO) throws HmsException {
@@ -37,7 +41,25 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Boolean patientExists(Long id) throws HmsException {
-        return patientRepository.findById(id).isPresent();
+        return patientRepository.existsById(id);
+    }
+
+    @Override
+    public List<DoctorName> getPatientNamesByIds(List<Long> ids) {
+
+        return patientRepository.findAllById(ids)
+                .stream()
+                .map(patient -> new DoctorName(patient.getId(), patient.getName()))
+                .toList();
+    }
+
+    @Override
+    public List<PatientDTO> getAllPatients() {
+        return patientRepository.findAll().stream().map(p -> p.toPatientDTO()).toList();
+    }
+    @Override
+    public long count() {
+        return patientRepository.count();
     }
 
 }

@@ -1,21 +1,23 @@
 package com.hms.profile.service;
 
 import com.hms.profile.dto.DoctorDTO;
-import com.hms.profile.dto.DoctorDropdown;
+import com.hms.profile.dto.DoctorName;
 import com.hms.profile.exception.HmsException;
 import com.hms.profile.repository.DoctorRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DoctorServiceImpl implements DoctorService{
-    DoctorRepository doctorRepository;
+    final DoctorRepository doctorRepository;
 
     @Override
     public Long addDoctor(DoctorDTO doctorDTO) throws HmsException {
@@ -42,13 +44,39 @@ public class DoctorServiceImpl implements DoctorService{
     }
 
     @Override
-    public Boolean doctorExists(Long doctorId) throws HmsException {
-        return doctorRepository.existsById(doctorId);
-    }
-
-    @Override
-    public List<DoctorDropdown> getDoctorDropdown() throws HmsException {
+    public List<com.hms.profile.dto.DoctorDropdown> getDoctorDropdown() throws HmsException {
         return doctorRepository.findAllDoctorDropdown();
     }
 
+    @Override
+    public List<DoctorDTO> getAllDoctors() {
+        return doctorRepository.findAll().stream().map(d -> d.toDoctorDTO()).toList();
+    }
+
+    @Override
+    public List<DoctorName> getDoctorNamesByIds(List<Long> ids) {
+
+        return doctorRepository.findAllById(ids)
+                .stream()
+                .map(doctor -> new DoctorName(doctor.getId(), doctor.getName()))
+                .toList();
+    }
+
+    @Override
+    public long count() {
+        return doctorRepository.count();
+    }
+
+    @Override
+    public Map<String, Long> getDoctorsByDept() {
+        return doctorRepository.countByDepartment().stream()
+                .collect(Collectors.toMap(
+                    row -> row[0] == null ? "General" : (String) row[0],
+                    row -> (Long) row[1]
+                ));
+    }
+    @Override
+    public Boolean doctorExists(Long id) throws HmsException {
+        return doctorRepository.existsById(id);
+    }
 }

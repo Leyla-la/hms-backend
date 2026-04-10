@@ -34,7 +34,22 @@ public class Patient {
     String allergies;
     String chronicDiseases;
 
+    @Column(name = "profile_picture_id")
+    Long profilePictureId;
+
     public PatientDTO toPatientDTO() {
-        return new PatientDTO(this.id, this.name, this.email, this.dob, this.phone, this.address, this.citizenId, this.bloodGroup, this.allergies, this.chronicDiseases);
+        return PatientDTO.builder()
+                .id(this.id)
+                .name(this.name)
+                .email(this.email)
+                .dob(this.dob)
+                .phone(this.phone)
+                .address(this.address)
+                .citizenId(this.citizenId)
+                .bloodGroup(this.bloodGroup)
+                .allergies(this.allergies)
+                .chronicDiseases(this.chronicDiseases)
+                .profilePictureId(this.profilePictureId)
+                .build();
     }
 }
